@@ -1,0 +1,5 @@
+DVRPC does extensive work with partner agencies to recommend changes for maintaining the existing transit infrastructure. Find relevant planning tools, publications, programs, and resources on our [Transit Planning](https://www.dvrpc.org/Transit/) page.
+
+See what transit investments are proposed for the region in the Transportation Improvement Program projects for [New Jersey](https://www.dvrpc.org/TIP/NJ/) and [Pennsylvania](https://www.dvrpc.org/tip/pa) counties and the *[Connections 2050 Plan: Major Regional Projects](https://www.dvrpc.org/webmaps/mrp2050/)*.
+
+DVRPC is required to either set regional targets or match transit agency targets for rolling stock, equipment, facilities, and fixed guideway infrastructure conditions, as part of the Federal Transit Administration’s Transportation Performance Management requirements. See how the region is performing: TPM [Transit Assets](https://www.dvrpc.org/tpm/?indicator=transitasset).
