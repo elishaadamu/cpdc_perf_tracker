@@ -17,15 +17,9 @@ function Navbar() {
                 className="h-auto w-10 md:w-15 rounded-full mr-2"
               />
               <div className="text-[#008085] text-[14px] md:text-[18px] font-semibold">
-                Performance Tracker
+                CPDC Performance Tracker
               </div>
             </Link>
-            <button
-              id="content"
-              className="border text-[#008085] text-[14px] md:text-[18px] font-semibold   hover:bg-[#008085] hover:text-white py-2 px-2 rounded-sm hover:transistion duration-300 ease-in-out"
-            >
-              Tri-Cities Area MPO Performance Dashboard
-            </button>
           </div>
         </div>
 

@@ -154,11 +154,11 @@ function MainContent() {
 
     // Category-specific colors
     const colors = {
-      economicdevelopment: "#762a83",
-      equity: "#9970ab",
-      safety: "#c2a5cf",
-      systemmanagement: "#e7d4e8",
-      environment: "#FFFFA6",
+      economicdevelopment: "#c0e6f5",
+      equity: "#fbe2d5",
+      safety: "#c1f0c8",
+      systemmanagement: "#f2ceef",
+      environment: "#d0d0d0",
     };
 
     return colors[selectedCategory];
@@ -174,7 +174,7 @@ function MainContent() {
 
     // Light background colors that need dark text
     const lightBackgrounds = ["environment", "community", "resilience"];
-    return lightBackgrounds.includes(selectedCategory) ? "#000000" : "#ffffff";
+    return lightBackgrounds.includes(selectedCategory) ? "#ffffff" : "#000000";
   };
 
   // Update handleBoxClick to hide sidebar
@@ -236,11 +236,7 @@ function MainContent() {
                   color: getTextAndIconColor(item.title),
                 }}
               >
-                {React.cloneElement(item.icon, {
-                  color: getTextAndIconColor(item.title),
-                  style: { color: getTextAndIconColor(item.title) },
-                })}
-                <div className="mt-4 text-lg font-semibold hover-text">
+                <div className="mt-4 text-[20px] font-semibold hover-text">
                   {item.title}
                 </div>
               </div>
@@ -251,14 +247,9 @@ function MainContent() {
                   color: getTextAndIconColor(item.title),
                 }}
               >
-                {React.cloneElement(item.trendIcon, {
-                  style: {
-                    fontSize: "40px",
-                    color: getTextAndIconColor(item.title),
-                  },
-                })}
-                <span className="font-bold">{item.trendDetails}</span>
-                <div className="mt-4 text-base text-center">{item.details}</div>
+                <div className="mt-4 text-[20px] font-semibold hover-text">
+                  {item.title}
+                </div>
               </div>
             </div>
           </div>

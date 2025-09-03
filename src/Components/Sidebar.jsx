@@ -59,16 +59,16 @@ function Sidebar() {
         <>
           <div
             onClick={() => handleCategoryClick("economicdevelopment")}
-            className={`${categoryClass} bg-[#762a83]  hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#762a83] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
+            className={`${categoryClass} bg-[#c0e6f5]  hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#c0e6f5] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
           >
-            <GrPowerCycle style={{ fontSize: "24px", color: "#ffffff" }} />
-            <span className="text-white text-base ml-2">
+            <GrPowerCycle style={{ fontSize: "24px", color: "#000000" }} />
+            <span className="text-black text-base ml-2">
               Economic Development
             </span>
           </div>
           <div
             onClick={() => handleCategoryClick("equity")}
-            className={`${categoryClass} bg-[#9970ab] hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#9970ab] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
+            className={`${categoryClass} bg-[#fbe2d5] hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#fbe2d5] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
           >
             <BarChartOutlined style={{ fontSize: "24px", color: "#000000" }} />
             <span className="text-black text-base ml-2">
@@ -77,14 +77,14 @@ function Sidebar() {
           </div>
           <div
             onClick={() => handleCategoryClick("safety")}
-            className={`${categoryClass} bg-[#c2a5cf] hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#c2a5cf] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
+            className={`${categoryClass} bg-[#c1f0c8] hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#c1f0c8] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
           >
             <SafetyOutlined style={{ fontSize: "24px", color: "#000000" }} />
             <span className="text-black text-base ml-2">Safety</span>
           </div>
           <div
             onClick={() => handleCategoryClick("systemmanagement")}
-            className={`${categoryClass} bg-[#FFFFA6] hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#FFFFA6] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
+            className={`${categoryClass} bg-[#f2ceef] hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#f2ceef] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
           >
             <EnvironmentOutlined
               style={{ fontSize: "24px", color: "#000000" }}
@@ -93,7 +93,7 @@ function Sidebar() {
           </div>
           <div
             onClick={() => handleCategoryClick("environment")}
-            className={`${categoryClass} bg-[#a6dba0] hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#a6dba0] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
+            className={`${categoryClass} bg-[#d0d0d0] hover:shadow-[0_4px_15px_rgba(251,191,36,0.5)] hover:bg-[#d0d0d0] cursor-pointer transition-all duration-100 ease-in-out mx-2 md:mx-0`}
           >
             <TeamOutlined style={{ fontSize: "24px", color: "#000000" }} />
             <span className="text-black text-base ml-2">Environment</span>
