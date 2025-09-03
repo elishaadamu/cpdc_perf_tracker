@@ -12,21 +12,11 @@ import {
 } from "recharts";
 
 const CHART_COLORS = {
-  "MPO Region": "#1565C0",
-  Hopewell: "#C62828",
-  Petersburg: "#2E7D32",
-  "Colonial Heights": "#6A1B9A",
-  Chesterfield: "#E65100",
-  Dinwiddie: "#00838F",
-  "Prince George": "#4E342E",
+  AM: "#1565C0",
+  PM: "#C62828",
 };
 
-const INITIAL_VISIBLE_LINES = [
-  "mpo",
-  "hopewell",
-  "petersburg",
-  "colonial_heights",
-];
+const INITIAL_VISIBLE_LINES = ["AM", "PM"];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload) return null;
@@ -169,7 +159,7 @@ const CongestionChart = ({ dataPath, config }) => {
 
   return (
     <div>
-      <ResponsiveContainer width="100%" height={600}>
+      <ResponsiveContainer width="100%" height={400}>
         {renderChart()}
       </ResponsiveContainer>
     </div>

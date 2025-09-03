@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import * as d3 from "d3";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -9,26 +10,17 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import * as d3 from "d3";
 
 const CHART_COLORS = {
-  "Tri-Cities Area": "#1565C0",
-  "Richmond Region": "#2E7D32",
-  "Total Urban Area": "#E65100",
+  overall: "#1565C0", // blue
+  DA: "#2E7D32", // green
+  cp: "#E65100", // orange
+  pt: "#6A1B9A", // purple
 };
 
-const selectStyle = {
-  padding: "0.5rem",
-  borderRadius: "4px",
-  border: "1px solid #9E9E9E",
-  backgroundColor: "#E3F2FD",
-  cursor: "pointer",
-  color: "#000000",
-  fontWeight: "500",
-};
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (!active || !payload) return null;
+// Custom Tooltip
+const CustomTooltip = ({ active, payload, label, seriesMap }) => {
+  if (!active || !payload || payload.length === 0) return null;
 
   return (
     <div
@@ -44,9 +36,9 @@ const CustomTooltip = ({ active, payload, label }) => {
       <p style={{ margin: "0 0 5px 0", fontWeight: "bold", color: "#000000" }}>
         {label}
       </p>
-      {payload.map((entry, index) => (
+      {payload.map((entry, idx) => (
         <div
-          key={index}
+          key={idx}
           style={{ display: "flex", alignItems: "center", marginBottom: "3px" }}
         >
           <div
@@ -59,7 +51,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             }}
           />
           <span style={{ color: "#000000" }}>
-            {entry.name}: {(entry.value * 100).toFixed(2)}%
+            {seriesMap[entry.dataKey] || entry.name}: {entry.value}
           </span>
         </div>
       ))}
@@ -67,115 +59,71 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-const CongestionChart6 = ({ dataPath, config }) => {
+const PavementChart = ({ dataPath, config }) => {
   const [data, setData] = useState([]);
-  const [selectedScope, setSelectedScope] = useState("Capita");
-  const [hiddenSeries, setHiddenSeries] = useState(new Set());
 
-  React.useEffect(() => {
+  // build series mapping from config
+  const seriesMap = config.lines.reduce((acc, line) => {
+    acc[line.key] = line.name;
+    return acc;
+  }, {});
+
+  useEffect(() => {
     fetch(dataPath)
-      .then((response) => response.text())
+      .then((res) => res.text())
       .then((csvText) => {
-        const parsedData = d3.csvParse(csvText);
-        const filteredData = parsedData.filter(
-          (d) => d.Scope === selectedScope
-        );
-
-        const transformedData = filteredData.map((row) => ({
-          year: row.Year,
-          TCA_UA: parseFloat(row.TCA_UA),
-          RR_UA: parseFloat(row.RR_UA),
-          Total_UA: parseFloat(row.Total_UA),
-        }));
-
-        setData(transformedData.sort((a, b) => a.year - b.year));
+        const parsed = d3.csvParse(csvText);
+        const numericData = parsed.map((d) => {
+          const obj = { ...d, year: +d.year };
+          config.lines.forEach((line) => {
+            obj[line.key] = +d[line.key]; // force numeric
+          });
+          return obj;
+        });
+        setData(numericData);
       })
-      .catch((error) => {
-        console.error("Error loading chart data:", error);
-      });
-  }, [dataPath, selectedScope]);
+      .catch((err) => console.error("Error loading CSV:", err));
+  }, [dataPath, config.lines]);
 
-  const handleLegendClick = (entry) => {
-    setHiddenSeries((prev) => {
-      const newHidden = new Set(prev);
-      if (newHidden.has(entry.dataKey)) {
-        newHidden.delete(entry.dataKey);
-      } else {
-        newHidden.add(entry.dataKey);
-      }
-      return newHidden;
-    });
-  };
+  if (data.length === 0) return <div>Loading...</div>;
 
   return (
-    <div>
-      <div style={{ marginBottom: "1rem" }}>
-        <label
-          htmlFor="scopeSelect"
-          style={{
-            marginRight: "0.5rem",
-            fontWeight: "500",
-            color: "#000000",
+    <ResponsiveContainer width="100%" height={500}>
+      <BarChart
+        data={data}
+        margin={{ top: 20, right: 30, left: 50, bottom: 20 }}
+        style={{ backgroundColor: "white" }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+        <XAxis dataKey="year" tick={{ fill: "#000" }} />
+        <YAxis
+          tick={{ fill: "#000" }}
+          label={{
+            value: config.yAxis?.label || "",
+            angle: -90,
+            position: "insideLeft",
+            style: { fontSize: 14, fontWeight: "bold" },
           }}
-        >
-          Select Measure:
-        </label>
-        <select
-          id="scopeSelect"
-          value={selectedScope}
-          onChange={(e) => setSelectedScope(e.target.value)}
-          style={selectStyle}
-        >
-          {config.filters.Scope.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <ResponsiveContainer width="100%" height={600}>
-        <LineChart
-          data={data}
-          margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" />
-          <YAxis
-            tickFormatter={(value) => `${(value * 100).toFixed(1)}%`}
-            domain={[0, (dataMax) => Math.ceil(dataMax * 100) / 100]}
-            tick={{ fontSize: 12 }} // Add this line to reduce tick font size
-            label={{
-              value: config.yAxis.label,
-              angle: -90,
-              position: "insideLeft",
-              offset: -10,
-              style: {
-                textAnchor: "middle",
-                fill: "#000000",
-                fontWeight: "bold",
-                fontSize: 14, // Add this line to reduce label font size
-              },
-            }}
+        />
+        {/* ✅ Fix: pass props correctly */}
+        <Tooltip
+          content={(props) => (
+            <CustomTooltip {...props} seriesMap={seriesMap} />
+          )}
+        />
+        <Legend formatter={(value) => seriesMap[value] || value} />
+        {config.lines.map((line) => (
+          <Bar
+            key={line.key}
+            dataKey={line.key}
+            name={line.name}
+            fill={CHART_COLORS[line.key]}
+            stackId="a"
           />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend onClick={handleLegendClick} />
-          {config.lines.map((line) => (
-            <Line
-              key={line.value}
-              type="cardinal"
-              dataKey={line.value}
-              name={line.name}
-              stroke={CHART_COLORS[line.name]}
-              hide={hiddenSeries.has(line.value)}
-              dot={{ r: 4 }}
-              activeDot={{ r: 8 }}
-            />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+        ))}
+      </BarChart>
+    </ResponsiveContainer>
   );
 };
 
-export default CongestionChart6;
+export default PavementChart;

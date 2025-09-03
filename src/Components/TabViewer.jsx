@@ -10,13 +10,8 @@ const formatFolderTitle = (folderPath) => {
 };
 
 const TabViewer = ({ folderPath, trendIcon, trendDetails, details, title }) => {
-  const [tabs] = useState([
-    "why_its_important",
-    "what_is_it",
-    "how_are_we_doing",
-    "resources",
-  ]);
-  const [activeTab, setActiveTab] = useState("why_its_important");
+  const [tabs] = useState(["home"]);
+  const [activeTab, setActiveTab] = useState("home");
   const [content, setContent] = useState("");
   const [error, setError] = useState(null);
   const [folderTitle, setFolderTitle] = useState("");
@@ -123,40 +118,7 @@ const TabViewer = ({ folderPath, trendIcon, trendDetails, details, title }) => {
         </h1>
       </div>
 
-      <div className="relative flex transistion-all duration-300 ease-in-out md:justify-center overflow-x-auto whitespace-nowrap space-x-4 mb-4 border-b border-gray-700 scrollbar-hide">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            className={`shrink-0 px-4 py-2 whitespace-nowrap relative transition-all duration-300 ease-in-out
-              ${
-                activeTab === tab
-                  ? "text-yellow-500"
-                  : "text-gray-400 hover:text-gray-200"
-              }
-              after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5
-              after:transition-all after:duration-300 after:ease-in-out
-              ${
-                activeTab === tab
-                  ? "after:bg-yellow-500 after:opacity-100"
-                  : "after:bg-transparent after:opacity-0"
-              }
-            `}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab
-              .split("_")
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(" ")}
-          </button>
-        ))}
-      </div>
-      <div className="flex items-center text-yellow-500 justify-center mt-10 gap-5">
-        <div className="flex items-center">
-          {trendIcon}
-          <span className="ml-2 font-semibold">{trendDetails}</span>
-        </div>
-        <span className="text-gray-300 mt-[0px] ">{details}</span>
-      </div>
+      <div className="flex items-center text-yellow-500 justify-center mt-10 gap-5"></div>
       <div className="prose prose-invert mt-10 max-w-[1024px] text-justify mx-auto">
         {error ? (
           <div className="text-red-500">{error}</div>

@@ -97,7 +97,7 @@ const items = [
     icon: <FaTint size={40} color="#ffffff" />,
     trendIcon: <FrownOutlined size={40} color="#ffffff" />,
     trendDetails: "2.8% decrease",
-    title: "Congestion-environment",
+    title: "Environment",
     details: "in water supporting aquatic life",
     markdownPath: "/markdown/Congestion-1",
   },
@@ -109,7 +109,7 @@ const categoryMapping = {
   equity: ["Accessibility"],
   safety: ["Safety"],
   systemmanagement: ["Pavements"],
-  environment: ["Congestion-environment"],
+  environment: ["Environment"],
 };
 
 // First, add this mapping near the top of the file, after the items array
