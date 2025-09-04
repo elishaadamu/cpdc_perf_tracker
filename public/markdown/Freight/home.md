@@ -3,7 +3,7 @@ chart:{
 "file": "cpdc/5_tttr.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "Time",
+"label": "Truck Travel Time Index",
 "type": "number"
 },
 "lines": [

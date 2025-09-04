@@ -3,7 +3,7 @@ chart:{
 "file": "cpdc/1_tti_am_pm.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "Time",
+"label": "Travel Time Index",
 "type": "number"
 },
 "lines": [

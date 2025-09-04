@@ -3,7 +3,7 @@ chart:{
 "file": "cpdc/3_pti_am_pm.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "Time",
+"label": "Planning Time Index",
 "type": "number"
 },
 "lines": [

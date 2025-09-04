@@ -17,7 +17,7 @@ function Navbar() {
                 className="h-auto w-10 md:w-15 rounded-full mr-2"
               />
               <div className="text-[#008085] text-[14px] md:text-[18px] font-semibold">
-                CPDC Performance Tracker
+                Tri-Cities Area MPO Performance Tracker
               </div>
             </Link>
           </div>

@@ -50,7 +50,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             }}
           />
           <span style={{ color: "#000000" }}>
-            {entry.name}: {entry.value}
+            {entry.name}: {Number(entry.value).toFixed(2)}
           </span>
         </div>
       ))}
@@ -73,12 +73,24 @@ const CongestionChart = ({ dataPath, config }) => {
       .then((response) => response.text())
       .then((csvText) => {
         const parsedData = d3.csvParse(csvText);
-        setData(parsedData);
+
+        // Convert numeric values to floats with 2 decimals
+        const formattedData = parsedData.map((row) => {
+          const newRow = { ...row };
+          config.lines.forEach((line) => {
+            if (newRow[line.key]) {
+              newRow[line.key] = parseFloat(newRow[line.key]).toFixed(2);
+            }
+          });
+          return newRow;
+        });
+
+        setData(formattedData);
       })
       .catch((error) => {
         console.error("Error loading chart data:", error);
       });
-  }, [dataPath]);
+  }, [dataPath, config.lines]);
 
   const handleLegendClick = (entry) => {
     setHiddenSeries((prev) => {
@@ -118,6 +130,7 @@ const CongestionChart = ({ dataPath, config }) => {
             position: "insideLeft",
             style: { textAnchor: "middle", fontSize: 14, fontWeight: "bold" },
           }}
+          tickFormatter={(value) => Number(value).toFixed(2)}
         />
         <Tooltip content={CustomTooltip} />
         <Legend

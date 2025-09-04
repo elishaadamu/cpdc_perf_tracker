@@ -1,9 +1,11 @@
+#### Non-SOV Commute
+
 chart:{
 "type": "congestion2",
 "file": "cpdc/27_commute_non_sov.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "congestion",
+"label": "Non-SOV Commute",
 "type": "number"
 },
 "lines": [
@@ -17,19 +19,17 @@ chart:{
 ]
 }
 
-<hr className="my-20" />
+#### PHED per Capita
 
 chart:{
 "type": "congestion5",
 "file": "cpdc/18_pehd.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "Total Population",
+"label": "PHED",
 "type": "number"
 },
 "lines": [
-{"key": "TotalPopulation", "name": "TotalPopulation"},
-{"key": "PHED", "name": "PHED"},
 {"key": "PHEDperCapita", "name": "PHEDperCapita"}
 ]
 }

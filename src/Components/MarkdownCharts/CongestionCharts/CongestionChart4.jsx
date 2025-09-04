@@ -22,9 +22,9 @@ const CHART_COLORS = {
 const INITIAL_VISIBLE_BARS = [
   "Fatalities",
   "SI",
-  "FatalityRate",
-  "SIRate",
-  "NMFSI",
+  "fat_rate",
+  "si_rate",
+  "nm_fsi",
 ];
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -59,7 +59,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             }}
           />
           <span style={{ color: "#000000" }}>
-            {entry.name}: {entry.value}
+            {entry.name}: {Number(entry.value).toFixed(2)}
           </span>
         </div>
       ))}
@@ -82,11 +82,10 @@ const CongestionChart = ({ dataPath, config }) => {
       .then((response) => response.text())
       .then((csvText) => {
         const parsedData = d3.csvParse(csvText);
-        // convert numeric fields
         const numericData = parsedData.map((d) => {
           const obj = { ...d };
           config.lines.forEach((line) => {
-            obj[line.key] = +d[line.key]; // force numbers
+            obj[line.key] = +d[line.key]; // ensure numbers
           });
           return obj;
         });
@@ -122,20 +121,40 @@ const CongestionChart = ({ dataPath, config }) => {
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
         <XAxis
-          dataKey="Year"
+          dataKey="year"
           tick={{ fill: "#000000", fontSize: 12 }}
           stroke="#666666"
         />
+
+        {/* Left Y-Axis for counts */}
         <YAxis
+          yAxisId="left"
           tick={{ fill: "#000000", fontSize: 12 }}
-          stroke="#666666"
+          stroke="#1565C0"
           label={{
-            value: config.yAxis?.label || "",
+            value: "Fatalities / Serious Injuries",
             angle: -90,
             position: "insideLeft",
             style: { textAnchor: "middle", fontSize: 14, fontWeight: "bold" },
           }}
+          tickFormatter={(value) => Number(value).toFixed(2)}
         />
+
+        {/* Right Y-Axis for rates */}
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          tick={{ fill: "#000000", fontSize: 12 }}
+          stroke="#E65100"
+          label={{
+            value: "Rates",
+            angle: 90,
+            position: "insideRight",
+            style: { textAnchor: "middle", fontSize: 14, fontWeight: "bold" },
+          }}
+          tickFormatter={(value) => Number(value).toFixed(2)}
+        />
+
         <Tooltip content={CustomTooltip} />
         <Legend
           onClick={handleLegendClick}
@@ -146,17 +165,48 @@ const CongestionChart = ({ dataPath, config }) => {
             cursor: "pointer",
           }}
         />
-        {config.lines.map((line) => (
-          <Bar
-            key={line.key}
-            dataKey={line.key}
-            name={line.name}
-            fill={CHART_COLORS[line.name]}
-            stackId="stack"
-            hide={hiddenSeries.has(line.key)}
-            opacity={hiddenSeries.has(line.key) ? 0.3 : 1}
-          />
-        ))}
+
+        {/* Bars - assign Y-Axis depending on type */}
+        <Bar
+          yAxisId="left"
+          dataKey="Fatalities"
+          name="Fatalities"
+          fill={CHART_COLORS.Fatalities}
+          hide={hiddenSeries.has("Fatalities")}
+          opacity={hiddenSeries.has("Fatalities") ? 0.3 : 1}
+        />
+        <Bar
+          yAxisId="left"
+          dataKey="SI"
+          name="Serious Injuries"
+          fill={CHART_COLORS.SI}
+          hide={hiddenSeries.has("SI")}
+          opacity={hiddenSeries.has("SI") ? 0.3 : 1}
+        />
+        <Bar
+          yAxisId="right"
+          dataKey="fat_rate"
+          name="Fatality Rate"
+          fill={CHART_COLORS.FatalityRate}
+          hide={hiddenSeries.has("fat_rate")}
+          opacity={hiddenSeries.has("fat_rate") ? 0.3 : 1}
+        />
+        <Bar
+          yAxisId="right"
+          dataKey="si_rate"
+          name="Serious Injury Rate"
+          fill={CHART_COLORS.SIRate}
+          hide={hiddenSeries.has("si_rate")}
+          opacity={hiddenSeries.has("si_rate") ? 0.3 : 1}
+        />
+        <Bar
+          yAxisId="left"
+          dataKey="nm_fsi"
+          name="NMFSI"
+          fill={CHART_COLORS.NMFSI}
+          hide={hiddenSeries.has("nm_fsi")}
+          opacity={hiddenSeries.has("nm_fsi") ? 0.3 : 1}
+        />
       </BarChart>
     );
   };

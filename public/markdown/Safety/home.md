@@ -3,7 +3,7 @@ chart:{
 "file": "cpdc/10_14_safety.csv",
 "xAxis": "Year",
 "yAxis": {
-"label": "Safety",
+"label": "Value",
 "type": "number"
 },
 "lines": [

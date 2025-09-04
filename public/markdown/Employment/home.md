@@ -3,7 +3,7 @@ chart:{
 "file": "cpdc/2_employ.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "congestion",
+"label": "Total Employment",
 "type": "number"
 },
 "lines": [
