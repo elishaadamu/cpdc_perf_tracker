@@ -5,7 +5,7 @@ chart:{
 "file": "cpdc/27_commute_non_sov.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "Non-SOV Commute",
+"label": "Non-SOV Commute Time (minutes)",
 "type": "number"
 },
 "lines": [
@@ -26,7 +26,7 @@ chart:{
 "file": "cpdc/18_pehd.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "PHED",
+"label": "PHED per Capita",
 "type": "number"
 },
 "lines": [

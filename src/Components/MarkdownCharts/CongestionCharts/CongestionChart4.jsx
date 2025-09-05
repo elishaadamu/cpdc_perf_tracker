@@ -1,8 +1,9 @@
 import React from "react";
 import * as d3 from "d3";
 import {
-  BarChart,
+  ComposedChart,
   Bar,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -15,7 +16,7 @@ const CHART_COLORS = {
   Fatalities: "#1565C0",
   SI: "#2E7D32",
   FatalityRate: "#E65100",
-  SIRate: "#C62828",
+  SIRate: "#9C27B0",
   NMFSI: "#6A1B9A",
 };
 
@@ -53,13 +54,13 @@ const CustomTooltip = ({ active, payload, label }) => {
             style={{
               width: "10px",
               height: "10px",
-              backgroundColor: entry.color,
+              backgroundColor: entry.color || entry.stroke,
               borderRadius: "2px",
               marginRight: "5px",
             }}
           />
           <span style={{ color: "#000000" }}>
-            {entry.name}: {Number(entry.value).toFixed(2)}
+            {entry.name}: {Math.round(Number(entry.value))}
           </span>
         </div>
       ))}
@@ -114,7 +115,7 @@ const CongestionChart = ({ dataPath, config }) => {
     }
 
     return (
-      <BarChart
+      <ComposedChart
         data={data}
         margin={{ top: 10, right: 30, left: 50, bottom: 20 }}
         style={{ backgroundColor: "white" }}
@@ -137,7 +138,7 @@ const CongestionChart = ({ dataPath, config }) => {
             position: "insideLeft",
             style: { textAnchor: "middle", fontSize: 14, fontWeight: "bold" },
           }}
-          tickFormatter={(value) => Number(value).toFixed(2)}
+          tickFormatter={(value) => Math.round(value)}
         />
 
         {/* Right Y-Axis for rates */}
@@ -152,7 +153,7 @@ const CongestionChart = ({ dataPath, config }) => {
             position: "insideRight",
             style: { textAnchor: "middle", fontSize: 14, fontWeight: "bold" },
           }}
-          tickFormatter={(value) => Number(value).toFixed(2)}
+          tickFormatter={(value) => Math.round(value)}
         />
 
         <Tooltip content={CustomTooltip} />
@@ -174,6 +175,7 @@ const CongestionChart = ({ dataPath, config }) => {
           fill={CHART_COLORS.Fatalities}
           hide={hiddenSeries.has("Fatalities")}
           opacity={hiddenSeries.has("Fatalities") ? 0.3 : 1}
+          barSize={20}
         />
         <Bar
           yAxisId="left"
@@ -182,22 +184,7 @@ const CongestionChart = ({ dataPath, config }) => {
           fill={CHART_COLORS.SI}
           hide={hiddenSeries.has("SI")}
           opacity={hiddenSeries.has("SI") ? 0.3 : 1}
-        />
-        <Bar
-          yAxisId="right"
-          dataKey="fat_rate"
-          name="Fatality Rate"
-          fill={CHART_COLORS.FatalityRate}
-          hide={hiddenSeries.has("fat_rate")}
-          opacity={hiddenSeries.has("fat_rate") ? 0.3 : 1}
-        />
-        <Bar
-          yAxisId="right"
-          dataKey="si_rate"
-          name="Serious Injury Rate"
-          fill={CHART_COLORS.SIRate}
-          hide={hiddenSeries.has("si_rate")}
-          opacity={hiddenSeries.has("si_rate") ? 0.3 : 1}
+          barSize={20}
         />
         <Bar
           yAxisId="left"
@@ -206,14 +193,35 @@ const CongestionChart = ({ dataPath, config }) => {
           fill={CHART_COLORS.NMFSI}
           hide={hiddenSeries.has("nm_fsi")}
           opacity={hiddenSeries.has("nm_fsi") ? 0.3 : 1}
+          barSize={20}
         />
-      </BarChart>
+        <Line
+          yAxisId="right"
+          type="monotone"
+          dataKey="fat_rate"
+          name="Fatality Rate"
+          stroke={CHART_COLORS.FatalityRate}
+          hide={hiddenSeries.has("fat_rate")}
+          opacity={hiddenSeries.has("fat_rate") ? 0.3 : 1}
+          strokeWidth={2}
+        />
+        <Line
+          yAxisId="right"
+          type="monotone"
+          dataKey="si_rate"
+          name="Serious Injury Rate"
+          stroke={CHART_COLORS.SIRate}
+          hide={hiddenSeries.has("si_rate")}
+          opacity={hiddenSeries.has("si_rate") ? 0.3 : 1}
+          strokeWidth={2}
+        />
+      </ComposedChart>
     );
   };
 
   return (
     <div>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={500}>
         {renderChart()}
       </ResponsiveContainer>
     </div>

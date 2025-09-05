@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import * as d3 from "d3";
 import {
   LineChart,
   Line,
@@ -9,24 +10,13 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import * as d3 from "d3";
 
 const CHART_COLORS = {
-  "MPO Region": "#1565C0",
-  Hopewell: "#2E7D32",
-  Petersburg: "#E65100",
-  "Colonial Heights": "#6A1B9A",
-  Chesterfield: "#C62828",
-  Dinwiddie: "#00838F",
-  "Prince George": "#F9A825",
+  AM: "#1565C0",
+  PM: "#C62828",
 };
 
-const INITIAL_VISIBLE_LOCATIONS = [
-  "MPO",
-  "Hopewell",
-  "Petersburg",
-  "Colonial Heights",
-];
+const INITIAL_VISIBLE_LINES = ["AM", "PM"];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload) return null;
@@ -60,7 +50,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             }}
           />
           <span style={{ color: "#000000" }}>
-            {entry.name}: {(entry.value * 100).toFixed(2)}%
+            {entry.name}: {Number(entry.value).toFixed(2)}
           </span>
         </div>
       ))}
@@ -68,13 +58,13 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-const CongestionChart7 = ({ dataPath, config }) => {
-  const [data, setData] = useState([]);
-  const [hiddenSeries, setHiddenSeries] = useState(
+const CongestionChart = ({ dataPath, config }) => {
+  const [data, setData] = React.useState([]);
+  const [hiddenSeries, setHiddenSeries] = React.useState(
     new Set(
-      config.locations
-        .filter((loc) => !INITIAL_VISIBLE_LOCATIONS.includes(loc.value))
-        .map((loc) => loc.value)
+      config.lines
+        .filter((line) => !INITIAL_VISIBLE_LINES.includes(line.key))
+        .map((line) => line.key)
     )
   );
 
@@ -83,23 +73,24 @@ const CongestionChart7 = ({ dataPath, config }) => {
       .then((response) => response.text())
       .then((csvText) => {
         const parsedData = d3.csvParse(csvText);
-        const transformedData = parsedData.map((row) => ({
-          year: row.year,
-          ...config.locations.reduce(
-            (acc, loc) => ({
-              ...acc,
-              [loc.value]: parseFloat(row[loc.value]) || 0,
-            }),
-            {}
-          ),
-        }));
 
-        setData(transformedData.sort((a, b) => a.year - b.year));
+        // Convert numeric values to floats with 2 decimals
+        const formattedData = parsedData.map((row) => {
+          const newRow = { ...row };
+          config.lines.forEach((line) => {
+            if (newRow[line.key]) {
+              newRow[line.key] = parseFloat(newRow[line.key]).toFixed(2);
+            }
+          });
+          return newRow;
+        });
+
+        setData(formattedData);
       })
       .catch((error) => {
         console.error("Error loading chart data:", error);
       });
-  }, [dataPath, config.locations]);
+  }, [dataPath, config.lines]);
 
   const handleLegendClick = (entry) => {
     setHiddenSeries((prev) => {
@@ -113,54 +104,79 @@ const CongestionChart7 = ({ dataPath, config }) => {
     });
   };
 
+  const renderChart = () => {
+    if (data.length === 0) {
+      return <div>Loading data...</div>;
+    }
+
+    return (
+      <LineChart
+        data={data}
+        margin={{ top: 10, right: 30, left: 50, bottom: 20 }}
+        style={{ backgroundColor: "white" }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+        <XAxis
+          dataKey="Year"
+          tick={{ fill: "#000000", fontSize: 12 }}
+          stroke="#666666"
+        />
+        <YAxis
+          tick={{ fill: "#000000", fontSize: 12 }}
+          stroke="#666666"
+          label={{
+            value: config.yAxis?.label || "",
+            angle: -90,
+            position: "insideLeft",
+            style: { textAnchor: "middle", fontSize: 14, fontWeight: "bold" },
+          }}
+          tickFormatter={(value) => Number(value).toFixed(2)}
+        />
+        <Tooltip content={CustomTooltip} />
+        <Legend
+          onClick={handleLegendClick}
+          iconSize={10}
+          iconType="circle"
+          wrapperStyle={{
+            paddingTop: "20px",
+            cursor: "pointer",
+          }}
+        />
+        {config.lines.map((line) => (
+          <Line
+            key={line.key}
+            type="cardinal"
+            dataKey={line.key}
+            name={line.name}
+            stroke={CHART_COLORS[line.name]}
+            strokeWidth={2}
+            dot={{
+              r: 4,
+              strokeWidth: 2,
+              fill: "white",
+              stroke: CHART_COLORS[line.name],
+            }}
+            activeDot={{
+              r: 6,
+              strokeWidth: 2,
+              fill: "white",
+              stroke: CHART_COLORS[line.name],
+            }}
+            hide={hiddenSeries.has(line.key)}
+            opacity={hiddenSeries.has(line.key) ? 0.3 : 1}
+          />
+        ))}
+      </LineChart>
+    );
+  };
+
   return (
     <div>
-      <ResponsiveContainer width="100%" height={450}>
-        <LineChart
-          data={data}
-          margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="year"
-            domain={["auto", "auto"]}
-            style={{ fontSize: 12 }}
-          />
-          <YAxis
-            tickFormatter={(value) => `${(value * 100).toFixed(1)}%`}
-            tick={{ fontSize: 12 }}
-            label={{
-              value: config.yAxis.label,
-              angle: -90,
-              position: "insideLeft",
-              offset: -10,
-              style: {
-                textAnchor: "middle",
-                fill: "#000000",
-                fontSize: 14,
-                fontWeight: "bold",
-              },
-            }}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend onClick={handleLegendClick} />
-          {config.locations.map((location) => (
-            <Line
-              key={location.value}
-              type="cardinal"
-              dataKey={location.value}
-              name={location.name}
-              strokeWidth={2}
-              stroke={CHART_COLORS[location.name]}
-              hide={hiddenSeries.has(location.value)}
-              dot={{ r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-          ))}
-        </LineChart>
+      <ResponsiveContainer width="100%" height={400}>
+        {renderChart()}
       </ResponsiveContainer>
     </div>
   );
 };
 
-export default CongestionChart7;
+export default CongestionChart;

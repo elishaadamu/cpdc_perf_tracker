@@ -1,9 +1,11 @@
+#### Planning Time Index
+
 chart:{
-"type": "congestion1",
+"type": "congestion7",
 "file": "cpdc/3_pti_am_pm.csv",
 "xAxis": "year",
 "yAxis": {
-"label": "Planning Time Index",
+"label": "Commute Time (minutes)",
 "type": "number"
 },
 "lines": [
